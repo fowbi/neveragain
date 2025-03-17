@@ -57,4 +57,54 @@ return {
   s("dump", fmt([[dump({});]], { i(1, "") })),
   -- Laravel's log
   s("log", fmt([[\Illuminate\Support\Facades\Log::info({});]], { i(1, "") })),
+  -- PHPUnit DataProvider attribute
+  s(
+    "pudp",
+    fmt(
+      [[
+    #[DataProvider('{}')]
+      ]],
+      { i(1, "") }
+    )
+  ),
+  -- PHPUnit DataProvider attribute
+  s(
+    "puedp",
+    fmt(
+      [[
+    #[ExternalDataProvider({}::class, '{}')]
+      ]],
+      { i(1, ""), i(2, "") }
+    )
+  ),
+  -- PHPUnit TestWith attribute
+  s(
+    "putw",
+    fmt(
+      [[
+    #[TestWith([{})]
+      ]],
+      { i(1, "") }
+    )
+  ),
+  -- Factory
+  s(
+    "factory",
+    fmt(
+      [[
+      ${} = {}::new(){}->{}();
+      ]],
+      { i(1, ""), i(2, "Factory"), i(3, ""), i(4, "create") }
+    )
+  ),
+  -- PHPUnit mark test incomplete
+  s(
+    "puinc",
+    fmt(
+      [[
+      $this->markTestIncomplete('{}');
+      ]],
+      { i(1, "") }
+    )
+  ),
 }
