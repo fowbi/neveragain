@@ -7,7 +7,8 @@ TERM = "xterm-256color"
 
 [font]
 size = 20.0
-normal = { family = "Iosevka NF", style = "Regular" }
+#normal = { family = "Iosevka NF", style = "Regular" }
+normal = { family = "IosevkaTerm Nerd Font", style = "Regular" }
 bold = { style = "Bold" }
 italic = { style = "Italic" }
 bold_italic = { style = "Bold Italic" }
