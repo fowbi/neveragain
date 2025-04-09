@@ -25,9 +25,9 @@ return {
     fmt(
       [[
     private {} ${} {{
-      get {{
-        return $this->app[{}::class];
-      }}
+        get {{
+            return $this->app[{}::class];
+        }}
     }}
   ]],
       {
@@ -45,7 +45,7 @@ return {
     #[Test]
     public function it{}(): void
     {{
-      {}
+        {}
     }}
   ]],
       { i(1, ""), i(2, "") }
@@ -105,6 +105,19 @@ return {
       $this->markTestIncomplete('{}');
       ]],
       { i(1, "") }
+    )
+  ),
+  -- PHPUnit provider
+  s(
+    "puprov",
+    fmt(
+      [[
+    public static function {}(): iterable
+    {{
+        {}
+    }}
+  ]],
+      { i(1, ""), i(2, "") }
     )
   ),
 }
