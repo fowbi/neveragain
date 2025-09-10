@@ -27,11 +27,15 @@ return {
         adapters = {
           require("neotest-java")({}),
           require("neotest-phpunit")({
-            phpunit_cmd = function()
+            phpunit_cmd = function(args)
+              local test_args = args or ""
               if string.find(vim.fn.getcwd(), "bff") then
-                return vim.fn.getcwd() .. "/imtest"
+                local script_path = vim.fn.stdpath("config") .. "/craftzing/itsme/test"
+                local project_dir = vim.fn.getcwd()
+
+                return script_path .. " " .. project_dir .. " " .. test_args
               else
-                return "vendor/bin/phpunit"
+                return "vendor/bin/phpunit" .. test_args
               end
             end,
           }),

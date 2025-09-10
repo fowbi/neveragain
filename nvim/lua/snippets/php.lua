@@ -1,6 +1,5 @@
 local ls = require("luasnip") -- Load LuaSnip
 local s = ls.snippet -- Define a snippet
-local t = ls.text_node -- Define text nodes
 local i = ls.insert_node -- Define insert points
 local fmt = require("luasnip.extras.fmt").fmt -- Enable format
 local rep = require("luasnip.extras").rep -- Repeat
@@ -25,9 +24,7 @@ return {
     fmt(
       [[
     private {} ${} {{
-        get {{
-            return $this->app[{}::class];
-        }}
+        get => $this->app[{}::class];
     }}
   ]],
       {
