@@ -1,0 +1,55 @@
+[alias]
+  # Status
+	s = status -sb --column
+  st = status -s
+
+  # Log
+  l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+  lg = log --graph --pretty=format:'%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen%ar%Creset by %C(yellow)%an%Creset' --abbrev-commit # Format: * commitHash  Commit Message. 4 weeks ago by Author
+  ll = log --oneline # Oneline Log format
+  lf = log --name-status -10 # Detailed Log Format (Last 10 commits)
+	diffstat = "!f() { local parent=$(git rev-parse --abbrev-ref @{u} 2>/dev/null); if [[ -z \"$parent\" ]]; then parent=$(git rev-parse --abbrev-ref HEAD@{1} 2>/dev/null); fi; if [[ -z \"$parent\" ]]; then echo \"Error: No upstream or parent found.\"; return 1; fi; git diff --stat $(git merge-base HEAD \"$parent\")...HEAD; }; f"
+  # changes = diff --stat main...HEAD
+  changes = "!f() { git diff --stat ${1:-main}...HEAD; }; f"
+
+[color]
+  ui = true
+  diff = auto
+
+[branch]
+  autosetuprebase = always
+
+[push]
+  default = current # Push the current branch by default
+
+[core]
+  excludesfile = ~/.gitignore # Tell git you have a global .gitignore
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[advice]
+  statusHints = false # Remove usage hints
+
+[diff]
+  mnemonicprefix = true # Tell where are the diff from instead of using a and b notation
+
+[merge]
+  conflictstyle = zdiff3
+
+[delta]
+  navigate = true  # use n and N to move between diff sections
+  side-by-side = true
+  line-numbers = true
+  line-numbers-left-format = ""
+  line-numbers-right-format = "│ "
+  colorMoved = default
+  hyperlinks = true
+[init]
+	defaultBranch = main
+[user]
+	name = Tobi Beernaert
+	email = tobi@magier.be
+[pull]
+	rebase = true
