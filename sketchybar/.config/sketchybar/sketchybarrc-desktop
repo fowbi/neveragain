@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+FONT_FACE="IosevkaTerm Nerd Font"
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins-laptop"
+PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
+
+sketchybar --bar \
+  height=32 \
+  color=0x00000000 \
+  margin=0 \
+  sticky=on \
+  padding_left=23 \
+  padding_right=23 \
+  notch_width=188 \
+  display=main
+
+sketchybar --default \
+  background.color=0x66494d64 \
+  background.corner_radius=5 \
+  background.padding_right=5 \
+  background.height=26 \
+  icon.font="$FONT_FACE:Regular:15.0" \
+  icon.padding_left=5 \
+  icon.padding_right=5 \
+  label.font="$FONT_FACE:Regular:12.0" \
+  label.color=0xffcad3f5 \
+  label.y_offset=0 \
+  label.padding_left=0 \
+  label.padding_right=5
+
+sketchybar --update
+sketchybar --trigger space_change
