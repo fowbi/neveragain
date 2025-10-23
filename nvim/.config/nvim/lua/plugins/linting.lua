@@ -5,6 +5,12 @@ return {
     lazy = true,
     event = { "BufReadPre", "BufNewFile" },
     opts = {
+      -- updated on 2025-08-19
+      -- format_on_save = {
+      --   lsp_fallback = true,
+      --   async = false,
+      --   timeout_ms = 1000,
+      -- },
       formatters = {
         php_cs_fixer = {
           env = {

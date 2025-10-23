@@ -6,6 +6,15 @@ return {
     opts = {},
     dependencies = { "nvim-tree/nvim-web-devicons" },
     lazy = false,
+    -- keys = {
+    --   {
+    --     "<leader>o",
+    --     function()
+    --       require("oil").open()
+    --     end,
+    --     desc = "Open oil",
+    --   },
+    -- },
   },
   {
     "leath-dub/snipe.nvim",

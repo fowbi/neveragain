@@ -30,6 +30,8 @@ return {
             phpunit_cmd = function(args)
               local test_args = args or ""
               if string.find(vim.fn.getcwd(), "bff") then
+                -- updated 2025-08-19
+                -- local script_path = vim.fn.expand("~/.config/nvim/craftzing/itsme/test")
                 local script_path = vim.fn.stdpath("config") .. "/craftzing/itsme/test"
                 local project_dir = vim.fn.getcwd()
 
@@ -48,6 +50,10 @@ return {
     opts = {
       ensure_installed = {
         "java",
+        "php",
+      },
+      highlight = {
+        enable = true,
       },
     },
   },
