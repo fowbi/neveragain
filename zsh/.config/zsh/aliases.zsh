@@ -63,3 +63,5 @@ boop () {
 git-fworktree () {
   cd "$(git worktree list | fzf | awk '{print $1}')"
 }
+
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"

@@ -11,3 +11,4 @@ source "$ZDOTDIR/mac.zsh"
 if [[ -e "$HOME/.zshrc_local" ]]; then
   source "$HOME/.zshrc_local"
 fi
+export PATH="$HOME/.local/bin:$PATH"

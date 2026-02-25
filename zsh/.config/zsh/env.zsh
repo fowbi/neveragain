@@ -89,6 +89,12 @@ export PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
 
 export ZK_NOTEBOOK_DIR="$HOME/Documents/Notes"
 
-# other env-like options
+# GO
+# export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
+# export PATH=$PATH:$GOROOT/bin
 
+# other env-like options
 umask 077
