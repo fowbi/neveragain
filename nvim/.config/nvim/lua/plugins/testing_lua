@@ -27,18 +27,17 @@ return {
         adapters = {
           require("neotest-java")({}),
           require("neotest-phpunit")({
-            phpunit_cmd = function(args)
-              local test_args = args or ""
-              if string.find(vim.fn.getcwd(), "bff") then
-                -- updated 2025-08-19
-                -- local script_path = vim.fn.expand("~/.config/nvim/craftzing/itsme/test")
-                local script_path = vim.fn.stdpath("config") .. "/craftzing/itsme/test"
-                local project_dir = vim.fn.getcwd()
-
-                return script_path .. " " .. project_dir .. " " .. test_args
-              else
-                return "vendor/bin/phpunit" .. test_args
+            phpunit_cmd = function()
+              -- Look for a .neotest-docker.json in the project root
+              local config_path = vim.fn.getcwd() .. "/.neotest-docker.json"
+              if vim.fn.filereadable(config_path) == 1 then
+                local content = vim.fn.readfile(config_path)
+                local config = vim.fn.json_decode(table.concat(content, "\n"))
+                local container = config.container or "app"
+                local command = config.command or "vendor/bin/phpunit"
+                return "docker compose exec -T " .. container .. " " .. command
               end
+              return "vendor/bin/phpunit"
             end,
           }),
         },
