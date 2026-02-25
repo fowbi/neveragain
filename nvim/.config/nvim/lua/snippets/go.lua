@@ -11,6 +11,7 @@ local tr = su.transform
 local jt = su.join_text
 local nl = su.new_line
 local te = su.trig_engine
+local f = ls.function_node
 
 ls.add_snippets("go", {
   s({ trig = "v", descr = '(v) "shorthand variable declaration"', priority = -1000, trigEngine = te("w") }, {
@@ -783,5 +784,14 @@ ls.add_snippets("go", {
     t("(err)"),
     nl(),
     t("}"),
+  }),
+  -- Trigger with "pkg" + Tab
+  s("pkg", {
+    t("package "),
+    f(function()
+      -- Get the directory name as default package name
+      return vim.fn.expand("%:p:h:t")
+    end),
+    i(0),
   }),
 })

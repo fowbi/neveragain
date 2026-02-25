@@ -203,7 +203,8 @@ local function trig_engine(opts)
       if opts:find("r") ~= nil then
         local rx = regex_matchers[trigger]
         if rx == nil then
-          local jsregexp_ok, jsregexp = pcall(require, "luasnip-jsregexp")
+          -- local jsregexp_ok, jsregexp = pcall(require, "luasnip-jsregexp")
+          local jsregexp_ok, jsregexp = pcall(require, "jsregexp")
           if jsregexp_ok then
             rx = jsregexp.compile(remove_named_regex_groups(trigger))
             regex_matchers[trigger] = rx
