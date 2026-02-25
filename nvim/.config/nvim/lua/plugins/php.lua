@@ -6,6 +6,10 @@ return {
       "nvim-lua/plenary.nvim",
       "neovim/nvim-lspconfig",
     },
-    opts = {},
+    opts = {
+      lspconfig = {
+        enabled = false,
+      },
+    },
   },
 }
