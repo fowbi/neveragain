@@ -12,6 +12,12 @@
   # changes = diff --stat main...HEAD
   changes = "!f() { git diff --stat ${1:-main}...HEAD; }; f"
 	wip = !git add -A && git commit -m \"WIP: $(date)\" --no-verify
+  stashed = stash list --pretty=format:'%gd: %Cred%h%Creset %Cgreen[%ar]%Creset %s'
+  undo-commit  = reset --soft HEAD^
+  reset-commit = reset HEAD^
+  rc           = rebase --continue
+  ca    = c --amend
+  amend = ca --no-edit
 
 [color]
   ui = true
@@ -54,3 +60,5 @@
 	email = tobi@magier.be
 [pull]
 	rebase = true
+[status]
+	showstash = true
