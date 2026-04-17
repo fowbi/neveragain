@@ -5,7 +5,7 @@ return {
       ensure_installed = {
         "gopls",
         -- "apex_ls",
-        "jdtls",
+        -- "jdtls",
         "google-java-format",
       },
     },
