@@ -92,5 +92,6 @@ alt - f : yabai -m window --toggle zoom-fullscreen
 alt + shift - f : yabai -m window --toggle native-fullscreen
 
 # alacritty
-alt - return : open -n /Applications/Alacritty.app
+#alt - return : open -n /Applications/Alacritty.app
+alt - return : /opt/homebrew/bin/alacritty
 #alt - return : open -n /Applications/Alacritty.app --single-instance -d ~
