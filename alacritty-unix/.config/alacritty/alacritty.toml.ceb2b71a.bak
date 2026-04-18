@@ -37,8 +37,3 @@ y = 5
 
 [general]
 import = ["~/.config/alacritty/catppuccin/catppuccin-latte.toml"]
-
-[[keyboard.bindings]]
-key = "Return"
-mods = "Shift"
-chars = "\u001B\r"
