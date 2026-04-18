@@ -1,0 +1,179 @@
+# i3 config — ported from macOS yabai/skhd setup
+# Uses Mod1 (Alt) as the primary modifier to match the skhd bindings.
+
+set $mod Mod1
+
+# Font for window titles and bar
+font pango:monospace 10
+
+# Mouse: Alt+drag moves a floating window, Alt+right-drag resizes.
+# Matches `mouse_modifier alt` + move/resize from yabai.
+floating_modifier $mod
+tiling_drag modifier titlebar
+
+# Focus follows mouse roughly like yabai's `focus_follows_mouse autofocus`
+focus_follows_mouse yes
+mouse_warping none
+
+# Gaps (requires i3-gaps, standard on Manjaro's i3 community edition)
+gaps inner 10
+gaps outer 35
+
+# Borders — yabai used JankyBorders; i3 has a simple pixel border
+default_border pixel 2
+default_floating_border pixel 2
+
+# Launch terminal (alacritty)
+bindsym $mod+Return exec alacritty
+
+# Close focused window (yabai: alt - w)
+bindsym $mod+w kill
+
+# Program launcher — pick one; rofi is the Manjaro-friendly default
+bindsym $mod+d exec --no-startup-id rofi -show drun
+bindsym $mod+Tab exec --no-startup-id rofi -show window
+
+# ---- Focus ----
+# alt - h/j/k/l : focus west/south/north/east
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+# NOTE: skhd had both `alt - l` (focus east) and `alt - l` (layout float).
+# Focus east wins here since h/j/k/l is the muscle memory.
+bindsym $mod+l focus right
+
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+# ---- Move window ----
+# alt + shift - h/j/k/l : swap/move window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Right move right
+
+# ---- Split direction (yabai: alt + ctrl - h/j/k/l "insert") ----
+# i3 doesn't have per-direction insertion; split horizontally/vertically is the
+# closest equivalent. h/l → split horizontal, j/k → split vertical.
+bindsym $mod+Ctrl+h split h
+bindsym $mod+Ctrl+l split h
+bindsym $mod+Ctrl+j split v
+bindsym $mod+Ctrl+k split v
+
+bindsym $mod+Ctrl+Left  split h
+bindsym $mod+Ctrl+Right split h
+bindsym $mod+Ctrl+Down  split v
+bindsym $mod+Ctrl+Up    split v
+
+# ---- Layouts (yabai: alt - e/s, float toggle) ----
+bindsym $mod+e layout toggle split
+bindsym $mod+s layout stacking
+# Float toggle on the focused window (skhd had alt-l for float layout, but we
+# kept alt-l for focus east; Shift+Space is the i3 convention).
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+# ---- Fullscreen ----
+# alt - f : zoom-fullscreen ≈ i3 fullscreen on the output
+bindsym $mod+f fullscreen toggle
+# alt + shift - f : native fullscreen ≈ global fullscreen (across outputs)
+bindsym $mod+Shift+f fullscreen toggle global
+
+# ---- Window cycling (yabai: alt - p / alt - n) ----
+bindsym $mod+p focus next
+bindsym $mod+n focus prev
+
+# ---- Workspaces ----
+set $ws1  "1"
+set $ws2  "2"
+set $ws3  "3"
+set $ws4  "4"
+set $ws5  "5"
+set $ws6  "6"
+set $ws7  "7"
+set $ws8  "8"
+set $ws9  "9"
+set $ws10 "10"
+
+# Switch workspaces (not in skhd, but standard i3 muscle memory)
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+# Move window to workspace (skhd: alt + shift - N)
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+# Back-and-forth (skhd: alt - b, alt + shift - b)
+workspace_auto_back_and_forth yes
+bindsym $mod+b workspace back_and_forth
+bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
+
+# ---- Resize mode ----
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym h resize shrink width  10 px or 10 ppt
+    bindsym j resize grow   height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow   width  10 px or 10 ppt
+
+    bindsym Left  resize shrink width  10 px or 10 ppt
+    bindsym Down  resize grow   height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow   width  10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+# ---- Floating rules (mirrors yabai `manage=off` rules) ----
+for_window [class="(?i)1password"]    floating enable
+for_window [class="(?i)slack"]        floating enable
+for_window [class="(?i)mattermost"]   floating enable
+for_window [class="(?i)signal"]       floating enable
+for_window [class="(?i)telegram.*"]   floating enable
+for_window [class="(?i)orbstack"]     floating enable
+for_window [window_role="pop-up"]     floating enable
+for_window [window_role="dialog"]     floating enable
+for_window [window_type="dialog"]     floating enable
+for_window [title="^Preferences$"]    floating enable
+for_window [title="^Settings$"]       floating enable
+
+# ---- i3 session ----
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'"
+
+# ---- Lock ----
+bindsym $mod+Shift+x exec --no-startup-id lock
+
+# ---- Bar ----
+# polybar is launched via autostart below; no i3bar here.
+
+# ---- Autostart ----
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+# exec --no-startup-id picom
+# exec --no-startup-id nm-applet

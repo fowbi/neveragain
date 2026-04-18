@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# i3lock wrapper — Catppuccin Latte colors to match alacritty/polybar.
+# Bound from i3 (e.g. $mod+Shift+x → exec lock).
+
+# Catppuccin Latte
+base=eff1f5
+text=4c4f69
+subtext0=6c6f85
+surface1=bcc0cc
+blue=1e66f5
+red=d20f39
+green=40a02b
+peach=fe640b
+
+exec i3lock \
+    --nofork \
+    --ignore-empty-password \
+    --show-failed-attempts \
+    --color=$base \
+    --inside-color=${base}cc \
+    --ring-color=${surface1}ff \
+    --line-uses-ring \
+    --keyhl-color=${blue}ff \
+    --bshl-color=${peach}ff \
+    --separator-color=${surface1}ff \
+    --verif-color=${green}ff \
+    --wrong-color=${red}ff \
+    --layout-color=${text}ff \
+    --date-color=${subtext0}ff \
+    --time-color=${text}ff \
+    --greeter-color=${text}ff \
+    --radius=120 \
+    --ring-width=8 \
+    --indicator
