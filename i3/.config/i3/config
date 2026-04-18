@@ -177,4 +177,5 @@ bindsym $mod+Shift+x exec --no-startup-id lock
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec_always --no-startup-id picom -b
 exec_always --no-startup-id nitrogen --restore
+exec --no-startup-id blueman-applet
 # exec --no-startup-id nm-applet
