@@ -1,15 +1,5 @@
 return {
   {
-    "rcasia/neotest-java",
-    ft = "java",
-    dependencies = {
-      "mfussenegger/nvim-jdtls",
-      "mfussenegger/nvim-dap", -- for the debugger
-      "rcarriga/nvim-dap-ui", -- recommended
-      "theHamsta/nvim-dap-virtual-text", -- recommended
-    },
-  },
-  {
     "mfussenegger/nvim-dap",
     config = function() end,
   },
@@ -25,7 +15,6 @@ return {
     config = function()
       require("neotest").setup({
         adapters = {
-          require("neotest-java")({}),
           require("neotest-phpunit")({
             phpunit_cmd = function()
               -- Look for a .neotest-docker.json in the project root
@@ -48,7 +37,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
-        "java",
         "php",
       },
       highlight = {
