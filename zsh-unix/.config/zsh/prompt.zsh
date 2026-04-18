@@ -17,4 +17,3 @@ if hash fzf 2>/dev/null; then
 fi
 
 source ~/.zsh/catppuccin_latte-zsh-syntax-highlighting.zsh
-#source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

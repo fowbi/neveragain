@@ -10,11 +10,7 @@ fi
 prepend() {
   [ -d "$1" ] && PATH="$1:$PATH"
 }
-#prepend '/usr/local/bin'
-#prepend '/opt/homebrew/bin'
-#prepend '/opt/homebrew/sbin'
 prepend "$HOME/bin"
-#prepend '/home/linuxbrew/.linuxbrew/bin'
 unset prepend
 export PATH
 
@@ -59,14 +55,6 @@ export GPG_TTY="$(tty)"
 
 export GREP_COLORS='mt=00;36'
 
-export HOMEBREW_CLEANUP_MAX_AGE_DAYS=60
-export HOMEBREW_NO_EMOJI=1
-export HOMEBREW_NO_GITHUB_API=1
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_NO_INSECURE_REDIRECT=1
-export HOMEBREW_CASK_OPTS="--appdir='$HOME/Applications' --require-sha"
-
 export LESS='--ignore-case --RAW-CONTROL-CHARS --QUIET --quit-if-one-screen'
 export LESSHISTFILE='-'
 export LESSSECURE=1
@@ -83,9 +71,6 @@ export ZIPOPT='-9 --recurse-paths -X'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-#export JAVA_HOME=$(/usr/libexec/java_home)
-export PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
 
 export ZK_NOTEBOOK_DIR="$HOME/Documents/Notes"
 
