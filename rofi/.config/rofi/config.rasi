@@ -1,0 +1,72 @@
+configuration {
+    font: "IosevkaTerm 11";
+    show-icons: false;
+}
+
+* {
+    base:     #eff1f5;
+    mantle:   #e6e9ef;
+    surface0: #ccd0da;
+    surface1: #bcc0cc;
+    text:     #4c4f69;
+    subtext0: #6c6f85;
+    blue:     #1e66f5;
+    red:      #d20f39;
+
+    background-color: transparent;
+    text-color:       @text;
+}
+
+window {
+    background-color: @base;
+    border:           2px;
+    border-color:     @surface1;
+    border-radius:    6px;
+    padding:          8px;
+    width:            560px;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+    spacing: 8px;
+}
+
+inputbar {
+    background-color: @mantle;
+    border-radius:    4px;
+    padding:          6px 8px;
+    children:         [ prompt, entry ];
+    spacing:          6px;
+}
+
+prompt {
+    text-color: @blue;
+}
+
+entry {
+    text-color: @text;
+    placeholder-color: @subtext0;
+}
+
+listview {
+    background-color: transparent;
+    lines:            6;
+    spacing:          2px;
+}
+
+element {
+    background-color: transparent;
+    border-radius:    4px;
+    padding:          6px 8px;
+}
+
+element selected {
+    background-color: @blue;
+    text-color:       @base;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+}
