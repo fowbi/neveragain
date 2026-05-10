@@ -19,13 +19,6 @@ if [[ "$EDITOR" == nvim ]]; then
   alias vimdiff='nvim -d'
 fi
 
-if [ -z ${EVANHAHN_IS_SOURCING_ZSH_FROM_ANOTHER_SHELL+x} ]; then
-  alias mv='nocorrect mv -i -v'
-  alias cp='nocorrect cp -i -v'
-  alias mkdir='nocorrect mkdir -p -v'
-  alias ln='nocorrect ln -v'
-fi
-
 alias ,,='cd ..'
 alias ..l='cd .. && ls'
 alias :q='exit'

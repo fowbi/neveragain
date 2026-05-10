@@ -31,7 +31,8 @@ export PAGER=less
 
 export HISTFILE="$XDG_CACHE_HOME/.zhistory"
 export HISTSIZE=10000
-export SAVEHIST=9000
+export SAVEHIST=10000
+setopt appendhistory
 
 export CLICOLOR=1
 
