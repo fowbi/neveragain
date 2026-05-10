@@ -178,3 +178,14 @@ exec_always --no-startup-id picom -b
 exec_always --no-startup-id nitrogen --restore
 exec --no-startup-id blueman-applet
 # exec --no-startup-id nm-applet
+
+# Terminal scratchpad
+# Match on class (set at launch, never changes) rather than title (changes with SSH/shell prompts).
+exec --no-startup-id sleep 1 && alacritty --class zepolino --title "zepolino" --config-file ~/.config/alacritty/zepolino-dropdown.toml
+
+for_window [class="^zepolino$"] floating enable
+for_window [class="^zepolino$"] resize set 80ppt 40ppt
+for_window [class="^zepolino$"] move position 10ppt 60px
+for_window [class="^zepolino$"] move scratchpad
+
+bindsym $mod+F1 [class="^zepolino$"] scratchpad show
