@@ -189,3 +189,6 @@ for_window [class="^zepolino$"] move position 10ppt 60px
 for_window [class="^zepolino$"] move scratchpad
 
 bindsym $mod+F1 [class="^zepolino$"] scratchpad show
+
+# ---- Key delay & speed ----
+exec_always xset r rate 250 50
