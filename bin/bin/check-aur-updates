@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+
+# AUR Update Checker - Working Version
+
+set -euo pipefail
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# Configuration
+BUILD_DIR="${HOME}/builds"
+VERBOSE=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  -v | --verbose)
+    VERBOSE=true
+    shift
+    ;;
+  -h | --help)
+    echo "Usage: $0 [-v|--verbose]"
+    echo ""
+    echo "Options:"
+    echo "  -v, --verbose    Show detailed output"
+    echo "  -h, --help       Show this help"
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
+  esac
+done
+
+# Check if build directory exists
+if [[ ! -d "$BUILD_DIR" ]]; then
+  echo -e "${RED}Error: Build directory '$BUILD_DIR' does not exist.${NC}"
+  exit 1
+fi
+
+echo -e "${BLUE}════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}   Checking for AUR updates in: ${BUILD_DIR}${NC}"
+echo -e "${BLUE}════════════════════════════════════════════════════════${NC}"
+echo ""
+
+updates_found=0
+total_packages=0
+errors=0
+
+# Use ls to get all directories (Method 1 from debug)
+while IFS= read -r pkg_dir; do
+  if [[ -z "$pkg_dir" ]]; then
+    continue
+  fi
+
+  pkg_name=$(basename "$pkg_dir")
+  total_packages=$((total_packages + 1))
+
+  echo -n "  $pkg_name: "
+
+  # Check if it has .git
+  if [[ ! -d "$pkg_dir/.git" ]]; then
+    echo -e "${YELLOW}Not a git repo${NC}"
+    continue
+  fi
+
+  cd "$pkg_dir" || {
+    echo -e "${RED}Failed to enter directory${NC}"
+    ((errors++))
+    continue
+  }
+
+  # Get current commit
+  local_hash=$(git rev-parse HEAD 2>/dev/null)
+  if [[ -z "$local_hash" ]]; then
+    echo -e "${RED}Failed to get current commit${NC}"
+    ((errors++))
+    continue
+  fi
+
+  # Fetch updates
+  if ! git fetch origin --quiet 2>/dev/null; then
+    echo -e "${RED}Failed to fetch updates${NC}"
+    ((errors++))
+    continue
+  fi
+
+  # Get remote commit
+  remote_hash=$(git rev-parse origin/HEAD 2>/dev/null)
+  if [[ -z "$remote_hash" ]]; then
+    echo -e "${RED}Failed to get remote commit${NC}"
+    ((errors++))
+    continue
+  fi
+
+  # Compare
+  if [[ "$local_hash" != "$remote_hash" ]]; then
+    ((updates_found++))
+    echo -e "${GREEN}UPDATE AVAILABLE${NC}"
+
+    # Get version info
+    if [[ -f "PKGBUILD" ]]; then
+      local_ver=$(grep '^pkgver=' PKGBUILD 2>/dev/null | cut -d'=' -f2 | head -1)
+      remote_ver=$(git show origin/HEAD:PKGBUILD 2>/dev/null | grep '^pkgver=' | cut -d'=' -f2 | head -1)
+      local_rel=$(grep '^pkgrel=' PKGBUILD 2>/dev/null | cut -d'=' -f2 | head -1)
+      remote_rel=$(git show origin/HEAD:PKGBUILD 2>/dev/null | grep '^pkgrel=' | cut -d'=' -f2 | head -1)
+
+      if [[ -n "$local_ver" ]]; then
+        if [[ -n "$local_rel" ]]; then
+          echo "      Current:  $local_ver-$local_rel"
+        else
+          echo "      Current:  $local_ver"
+        fi
+      fi
+
+      if [[ -n "$remote_ver" ]]; then
+        if [[ -n "$remote_rel" ]]; then
+          echo "      Remote:   $remote_ver-$remote_rel"
+        else
+          echo "      Remote:   $remote_ver"
+        fi
+      fi
+    fi
+
+    echo "      Commit:  ${local_hash:0:7} → ${remote_hash:0:7}"
+
+    if [[ "$VERBOSE" == true ]]; then
+      echo "      Changes:"
+      git log --oneline HEAD..origin/HEAD --no-decorate | head -5 | sed 's/^/        /'
+    fi
+  else
+    echo -e "${BLUE}Up to date${NC}"
+    if [[ "$VERBOSE" == true ]]; then
+      echo "      Commit: ${local_hash:0:7}"
+
+      # Show version if available
+      if [[ -f "PKGBUILD" ]]; then
+        local_ver=$(grep '^pkgver=' PKGBUILD 2>/dev/null | cut -d'=' -f2 | head -1)
+        local_rel=$(grep '^pkgrel=' PKGBUILD 2>/dev/null | cut -d'=' -f2 | head -1)
+        if [[ -n "$local_ver" ]]; then
+          if [[ -n "$local_rel" ]]; then
+            echo "      Version: $local_ver-$local_rel"
+          else
+            echo "      Version: $local_ver"
+          fi
+        fi
+      fi
+    fi
+  fi
+
+done < <(ls -d "${BUILD_DIR}"/*/ 2>/dev/null || true)
+
+echo ""
+echo -e "${BLUE}════════════════════════════════════════════════════════${NC}"
+echo "Summary:"
+echo "  Total packages checked:  $total_packages"
+if [[ $updates_found -gt 0 ]]; then
+  echo -e "  ${GREEN}Updates available:     $updates_found${NC}"
+else
+  echo -e "  ${BLUE}Updates available:     0${NC}"
+fi
+[[ $errors -gt 0 ]] && echo -e "  ${RED}Errors encountered:    $errors${NC}"
+echo -e "${BLUE}════════════════════════════════════════════════════════${NC}"
+
+if [[ $updates_found -gt 0 ]]; then
+  echo ""
+  echo -e "${YELLOW}To update all packages with updates, run:${NC}"
+  echo -e "  cd $BUILD_DIR && for d in */; do cd \"\$d\" && git pull && makepkg -si --needed; cd ..; done"
+  echo ""
+  echo -e "${YELLOW}Or update a specific package:${NC}"
+  echo -e "  cd $BUILD_DIR/PACKAGE_NAME && git pull && makepkg -si"
+fi
