@@ -4,6 +4,8 @@ source "$ZDOTDIR/options.zsh"
 
 source "$ZDOTDIR/aliases.zsh"
 
+source "$ZDOTDIR/ai.zsh"
+
 source "$ZDOTDIR/prompt.zsh"
 
 source "$ZDOTDIR/sourcing.zsh"
