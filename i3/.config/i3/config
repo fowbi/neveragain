@@ -191,5 +191,9 @@ for_window [class="^zepolino$"] move scratchpad
 
 bindsym $mod+F1 [class="^zepolino$"] scratchpad show
 
+# ---- Assign programs to workspaces ----
+assign [class="^Brave-browser$"] workspace 3
+assign [class="^floorp$"] workspace 5
+
 # ---- Key delay & speed ----
 exec_always xset r rate 250 50
