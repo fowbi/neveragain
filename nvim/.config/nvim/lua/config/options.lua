@@ -13,3 +13,5 @@ vo.relativenumber = true
 -- Sets how neovim will display certain whitespace characters in the editor.
 vo.list = true
 vo.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+vo.clipboard = "unnamedplus"
