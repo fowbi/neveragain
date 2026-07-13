@@ -178,6 +178,7 @@ exec_always --no-startup-id picom -b
 exec_always --no-startup-id nitrogen --restore
 exec --no-startup-id blueman-applet
 # exec --no-startup-id nm-applet
+exec --no-startup-id clipit
 
 # Terminal scratchpad
 # Match on class (set at launch, never changes) rather than title (changes with SSH/shell prompts).
