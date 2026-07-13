@@ -28,6 +28,17 @@ alias dc='cd'
 alias sl='ls'
 alias sudp='sudo'
 
+## Replacements
+alias ls="eza --color=always"
+alias ll="eza -lh --color=always --git"
+alias la="eza -lah --color=always --git"
+alias tree="eza --tree"
+
+alias cat="bat --style=plain --paging=never"
+alias preview="bat --style=numbers,changes,header"
+
+alias find="fd"
+
 mkcd () {
   \mkdir -p "$1"
   cd "$1"
