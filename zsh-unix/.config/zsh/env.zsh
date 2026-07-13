@@ -82,6 +82,9 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 # export PATH=$PATH:$GOROOT/bin
 
+# Rust
+export PATH="$HOME/.cargo/bin:$PATH"
+
 # other env-like options
 umask 077
 
