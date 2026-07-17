@@ -24,13 +24,27 @@ return {
     fmt(
       [[
     private {} ${} {{
-        get => $this->app[{}::class];
+        get => $this->app->make({}::class);
     }}
   ]],
       {
         i(1, ""),
         i(2, ""),
         rep(1),
+      }
+    )
+  ),
+  -- TODO block
+  s(
+    "todo",
+    fmt(
+      [[
+    /**
+     * TODO {}
+     */
+  ]],
+      {
+        i(1, ""),
       }
     )
   ),
