@@ -192,6 +192,16 @@ for_window [class="^zepolino$"] move scratchpad
 
 bindsym $mod+F1 [class="^zepolino$"] scratchpad show
 
+# Floorp scratchpad
+exec --no-startup-id floorp -P scratchpad --class zepolino-browser --new-window "about:blank"
+
+for_window [class="^zepolino-browser$"] floating enable
+for_window [class="^zepolino-browser$"] resize set 80ppt 40ppt
+for_window [class="^zepolino-browser$"] move position 10ppt 55ppt
+for_window [class="^zepolino-browser$"] move scratchpad
+
+bindsym $mod+F2 [class="^zepolino-browser$"] scratchpad show
+
 # ---- Assign programs to workspaces ----
 assign [class="^Brave-browser$"] workspace 3
 assign [class="^floorp$"] workspace 5
