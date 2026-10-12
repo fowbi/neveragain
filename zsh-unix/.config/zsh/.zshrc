@@ -31,3 +31,8 @@ esac
 # opencode
 export PATH=/home/tobi/.opencode/bin:$PATH
 source /home/tobi/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script
+
+# Disable auto-title when inside tmux
+if [[ -n "$TMUX" ]]; then
+    export DISABLE_AUTO_TITLE='true'
+fi
