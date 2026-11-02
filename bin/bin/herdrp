@@ -1,0 +1,149 @@
+#!/usr/bin/env -S uv run --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyyaml"]
+# ///
+"""herdrp — load tmuxp project files into herdr.
+
+    herdrp <name|path.yml>   build (or focus) the workspace, then attach
+    herdrp -l                list available projects
+
+tmuxp session -> herdr workspace, window -> tab, pane -> pane.
+Supported keys: session_name, start_directory (session/window/pane),
+shell_command_before (session/window), windows, window_name, focus,
+panes (string, list of strings, or {start_directory, shell_command}),
+layout hint: main-vertical/even-horizontal split right, everything else down.
+
+Env: HERDRP_DIR (default ~/.config/tmuxp), HERDRP_SESSION (named herdr session).
+"""
+import json, os, subprocess, sys, time
+from pathlib import Path
+
+import yaml
+
+PROJECT_DIR = Path(os.environ.get("HERDRP_DIR", "~/.config/tmuxp")).expanduser()
+SESSION = os.environ.get("HERDRP_SESSION")
+BASE = ["herdr"] + (["--session", SESSION] if SESSION else [])
+
+
+def herdr(*args, check=True):
+    p = subprocess.run(BASE + list(args), capture_output=True, text=True)
+    try:
+        out = json.loads(p.stdout) if p.stdout.strip() else {}
+    except json.JSONDecodeError:
+        out = {}
+    if check and (p.returncode != 0 or "error" in out):
+        sys.exit(f"herdr {' '.join(args)} failed: {out.get('error') or p.stderr.strip()}")
+    return out.get("result", out)
+
+
+def expand(path, base):
+    if not path:
+        return base
+    p = Path(os.path.expandvars(os.path.expanduser(str(path))))
+    return str(p if p.is_absolute() else Path(base) / p)
+
+
+def as_list(v):
+    if v is None:
+        return []
+    return [v] if isinstance(v, str) else list(v)
+
+
+def ensure_server():
+    if herdr("workspace", "list", check=False).get("type") == "workspace_list":
+        return
+    subprocess.Popen(BASE + ["server"], stdout=subprocess.DEVNULL,
+                     stderr=subprocess.DEVNULL, start_new_session=True)
+    for _ in range(40):
+        time.sleep(0.25)
+        if herdr("workspace", "list", check=False).get("type") == "workspace_list":
+            return
+    sys.exit("herdr server did not come up")
+
+
+def find_config(arg):
+    p = Path(arg).expanduser()
+    if p.is_file():
+        return p
+    for ext in (".yml", ".yaml", ".json"):
+        c = PROJECT_DIR / f"{arg}{ext}"
+        if c.is_file():
+            return c
+    sys.exit(f"no project '{arg}' in {PROJECT_DIR}")
+
+
+def run(pane_id, cmds):
+    cmds = [c for c in cmds if c and c.strip()]
+    if cmds:
+        herdr("pane", "run", pane_id, " && ".join(cmds))
+
+
+def build(cfg):
+    name = cfg.get("session_name") or "herdrp"
+    for ws in herdr("workspace", "list")["workspaces"]:
+        if ws["label"] == name:
+            print(f"workspace '{name}' already exists, focusing it")
+            return ws["workspace_id"]
+
+    root = expand(cfg.get("start_directory"), os.getcwd())
+    before = as_list(cfg.get("shell_command_before"))
+    windows = cfg.get("windows") or [{}]
+    ws_id, focus_tab = None, None
+
+    for i, win in enumerate(windows):
+        win = win or {}
+        wdir = expand(win.get("start_directory"), root)
+        panes = [{"shell_command": p} if isinstance(p, (str, list)) or p is None else p
+                 for p in (win.get("panes") or [None])]
+        # Pane-level dir of the first pane becomes the tab's cwd.
+        first_dir = expand(panes[0].get("start_directory"), wdir)
+        label = str(win.get("window_name") or i + 1)
+
+        if ws_id is None:
+            r = herdr("workspace", "create", "--cwd", first_dir, "--label", name, "--no-focus")
+            ws_id, tab_id = r["workspace"]["workspace_id"], r["tab"]["tab_id"]
+            herdr("tab", "rename", tab_id, label)
+        else:
+            r = herdr("tab", "create", "--workspace", ws_id, "--cwd", first_dir,
+                      "--label", label, "--no-focus")
+            tab_id = r["tab"]["tab_id"]
+        pane_id = r["root_pane"]["pane_id"]
+
+        wbefore = before + as_list(win.get("shell_command_before"))
+        direction = "right" if win.get("layout") in ("main-vertical", "even-horizontal") else "down"
+        for j, pane in enumerate(panes):
+            if j > 0:
+                pdir = expand(pane.get("start_directory"), wdir)
+                pane_id = herdr("pane", "split", pane_id, "--direction", direction,
+                                "--cwd", pdir, "--no-focus")["pane"]["pane_id"]
+            run(pane_id, wbefore + as_list(pane.get("shell_command")))
+
+        if win.get("focus") and focus_tab is None:
+            focus_tab = tab_id
+
+    herdr("tab", "focus", focus_tab or f"{ws_id}:t1")
+    return ws_id
+
+
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ("-h", "--help"):
+        print(__doc__.strip())
+        return
+    if args[0] in ("-l", "--list"):
+        for c in sorted(PROJECT_DIR.glob("*.y*ml")):
+            if c.exists():
+                print(c.stem)
+        return
+
+    cfg = yaml.safe_load(find_config(args[0]).read_text()) or {}
+    ensure_server()
+    ws_id = build(cfg)
+    herdr("workspace", "focus", ws_id)
+    if os.environ.get("HERDR_ENV") != "1":   # outside herdr: attach the TUI
+        os.execvp(BASE[0], BASE)
+
+
+if __name__ == "__main__":
+    main()
