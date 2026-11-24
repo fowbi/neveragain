@@ -6,7 +6,6 @@ plugins=(
   docker-compose
   macos
   zsh-autosuggestions
-  fzf
 )
 
 source $ZSH/oh-my-zsh.sh
