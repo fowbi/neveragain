@@ -21,7 +21,7 @@ fi
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/home/tobi/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -29,8 +29,8 @@ esac
 # pnpm end
 
 # opencode
-export PATH=/home/tobi/.opencode/bin:$PATH
-source /home/tobi/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script
+export PATH=$HOME/.opencode/bin:$PATH
+source $HOME/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script
 
 # Disable auto-title when inside tmux
 if [[ -n "$TMUX" ]]; then

@@ -29,7 +29,13 @@ export PAGER=less
 
 # zsh stuff
 
-export HISTFILE="$XDG_CACHE_HOME/.zhistory"
+# history lives in XDG state, not cache (cache is meant to be safe to wipe)
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
+[[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
+# one-time migration from the old location
+if [[ ! -e "$HISTFILE" && -e "$XDG_CACHE_HOME/.zhistory" ]]; then
+  mv "$XDG_CACHE_HOME/.zhistory" "$HISTFILE"
+fi
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt appendhistory
@@ -71,8 +77,12 @@ export ZIPOPT='-9 --recurse-paths -X'
 
 # nvm: lazy-loaded. Sourcing nvm.sh costs 1-2s per shell, so put the default
 # node on PATH directly and only load the real nvm the first time `nvm` runs.
+# nvm.sh lives in ~/.nvm (curl install), /usr/share/nvm (Arch) or Homebrew.
 export NVM_DIR="$HOME/.nvm"
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+_nvm_src=( $NVM_DIR /usr/share/nvm /opt/homebrew/opt/nvm )
+_nvm_src=( ${^_nvm_src}/nvm.sh(N-.) )
+if (( $#_nvm_src )); then
+  export _NVM_SRC="${_nvm_src[1]:h}"
   _nvm_ver="$(<"$NVM_DIR/alias/default" 2>/dev/null)"
   _nvm_ver="${_nvm_ver#v}"
   # newest installed version matching the default alias (e.g. "22" or "22.18.0")...
@@ -80,15 +90,15 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
   # ...or the newest installed version if the alias is "node", "lts/*", or missing
   (( $#_nvm_bin )) || _nvm_bin=( $NVM_DIR/versions/node/v*(N/nOn[1]) )
   path=( ${^_nvm_bin}/bin $path )
-  unset _nvm_ver _nvm_bin
 
   nvm() {
     unset -f nvm
-    \. "$NVM_DIR/nvm.sh"
-    [[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+    \. "$_NVM_SRC/nvm.sh"
+    [[ -s "$_NVM_SRC/bash_completion" ]] && \. "$_NVM_SRC/bash_completion"
     nvm "$@"
   }
 fi
+unset _nvm_src _nvm_ver _nvm_bin
 
 export ZK_NOTEBOOK_DIR="$HOME/Documents/Notes"
 
@@ -105,4 +115,3 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # other env-like options
 umask 077
 
-source /usr/share/nvm/init-nvm.sh
