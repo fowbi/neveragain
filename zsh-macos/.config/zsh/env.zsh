@@ -80,9 +80,26 @@ export TIMEFMT=$'\n\e[33m%J\e[0m took \e[35m%E\e[0m'
 
 export ZIPOPT='-9 --recurse-paths -X'
 
+# nvm: lazy-loaded. Sourcing nvm.sh costs 1-2s per shell, so put the default
+# node on PATH directly and only load the real nvm the first time `nvm` runs.
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  _nvm_ver="$(<"$NVM_DIR/alias/default" 2>/dev/null)"
+  _nvm_ver="${_nvm_ver#v}"
+  # newest installed version matching the default alias (e.g. "22" or "22.18.0")...
+  _nvm_bin=( $NVM_DIR/versions/node/v${_nvm_ver}(|.*)(N/nOn[1]) )
+  # ...or the newest installed version if the alias is "node", "lts/*", or missing
+  (( $#_nvm_bin )) || _nvm_bin=( $NVM_DIR/versions/node/v*(N/nOn[1]) )
+  path=( ${^_nvm_bin}/bin $path )
+  unset _nvm_ver _nvm_bin
+
+  nvm() {
+    unset -f nvm
+    \. "$NVM_DIR/nvm.sh"
+    [[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+    nvm "$@"
+  }
+fi
 
 export JAVA_HOME=$(/usr/libexec/java_home)
 export PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH

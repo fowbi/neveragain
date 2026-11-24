@@ -7,7 +7,6 @@ plugins=(
   macos
   zsh-autosuggestions
   fzf
-  nvm
 )
 
 source $ZSH/oh-my-zsh.sh
