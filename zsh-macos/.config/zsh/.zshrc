@@ -6,6 +6,8 @@ source "$ZDOTDIR/aliases.zsh"
 
 source "$ZDOTDIR/prompt.zsh"
 
+source "$ZDOTDIR/tools.zsh"
+
 source "$ZDOTDIR/mac.zsh"
 
 if [[ -e "$HOME/.zshrc_local" ]]; then

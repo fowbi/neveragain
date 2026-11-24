@@ -10,6 +10,8 @@ source "$ZDOTDIR/prompt.zsh"
 
 source "$ZDOTDIR/sourcing.zsh"
 
+source "$ZDOTDIR/tools.zsh"
+
 if [[ -e "$HOME/.zshrc_local" ]]; then
   source "$HOME/.zshrc_local"
 fi
